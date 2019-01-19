@@ -1,0 +1,47 @@
+def answer_one():
+    df =  pd.read_csv("fraud_data.csv")
+
+    rows_total = df.shape[0]
+    print (rows_total)
+    print (df['Class'].value_counts())
+    fraud_no = int((df['Class'].value_counts())[1])
+    print (fraud_no)
+    return (fraud_no/rows_total)
+    
+    
+    
+answer_one()
+
+
+def answer_two():
+    from sklearn.dummy import DummyClassifier
+    from sklearn.metrics import recall_score
+    
+    dummy_majority = DummyClassifier(strategy = 'most_frequent').fit(X_train, y_train)
+    # Therefore the dummy 'most_frequent' classifier always predicts class 0
+    y_dummy_predictions = dummy_majority.predict(X_test)
+    print (y_dummy_predictions)
+    print (dummy_majority.score(X_test, y_test))
+    print (recall_score(y_test,y_dummy_predictions))
+    
+    
+    return (dummy_majority.score(X_test, y_test), recall_score(y_test,y_dummy_predictions))
+    
+answer_two
+
+def answer_three():
+    from sklearn.metrics import recall_score, precision_score
+    from sklearn.svm import SVC
+    
+
+    svm = SVC(kernel='rbf', C=1).fit(X_train, y_train)
+    svm_predict = svm.predict(X_test)
+    print (svm_predict)
+    acc =  (svm.score(X_test, y_test))
+    recall = recall_score(y_test,svm_predict)
+    precision = precision_score(y_test,svm_predict)
+    # Your code here
+    
+    return (acc,recall,precision)
+
+answer_three()

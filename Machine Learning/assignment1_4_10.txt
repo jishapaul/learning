@@ -1,0 +1,8 @@
+def answer_one():
+    
+    # Your code here
+    print (cancer.target_names)
+    df = pd.DataFrame(cancer.data, columns=cancer.feature_names)
+    df['target'] = cancer.target
+    print (df.columns)
+    return df

@@ -1,0 +1,350 @@
+def date_sorter():
+    import re
+    import datetime, time
+    from datetime import datetime
+    from dateutil import parser
+
+    
+    months = 'jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec'
+    
+    #print (datetime.datetime.strptime('20-Nov-2002','%d-%b-%Y').strftime('%m/%d/%Y'))
+    df1 = df.replace('\n','', regex=True)
+    df1 = df1.replace('\.','',regex=True)
+    #df1 = df1.str.findall(r'\d{1,2}[/-]\d{1,2}[/-]\d{2,4}')
+    #df2 = df1.str.findall(r'\d{1,2}[/-^\S]\w{1,3}[/-^\S]\d{2,4}')
+    #df2 = df1.str.findall(r'(\d{1,2}[/-^\S\s]\w{1,9}[/-^\S\s]\d{2,4})|(\w{1,9}[/-^\S\s]\d{1,2}[,][\s]\d{2,4})|(\w{1,9}[/-^\S\s]\d{2,4})')
+    df2 = df1.str.findall(r'(\d{1,2}[/-^\S\s]\w{1,9}[/-^\S\s]\d{2,4})|(\w{1,9}[/-^\S\s]\d{1,2}[,][\s]\d{2,4})')
+    #print (df2.iloc[125])
+    
+    #st = "s The patient is a 44 year old married Caucasian woman, unemployed Decorator, living with husband and caring for two young children, who is referred by Capitol Hill Hospital PCP, Dr Heather Zubia, for urgent evaluation/treatment till first visit with Dr Toney Winkler IN EIGHT WEEKS on 24 Jan 2001"
+    #print (re.findall(r'(\d{1,2}[/-^\S\s]\w{1,9}[/-^\S\s]\d{2,4})|(\w{1,9}[/-^\S\s]\d{1,2}[,][\s]\d{2,4})', st))
+    #print (re.findall(r'\d{1,2}\s\w{1,8}\s\d{2,4}', st))
+    #print ("--------------------------------------")
+    
+    
+    
+    for x in range(0,500):
+        s = ""
+        list = df2.iloc[x]
+        if len(list)==0:
+            list = re.findall(r'\w{1,9}[/-^\S\s]\d{2,4}', df.iloc[x])
+            s2=""
+            for k in list:
+                s2 = s2+k+" "  
+            df2.iloc[x] = s2
+            tup = df2.iloc[x]
+        else:
+            list2 = df2.iloc[x]
+            tup = list2[0]
+            for k in tup:
+                if k!="":
+                    s = s+k+"    "
+            df2.iloc[x]=s
+    df2 = df2.replace('in |In |Since |since |was |age |quit |attempt |delivery |a |s |phrectomy ','',regex=True)
+    df2 = df2.replace('-','/',regex=True)
+    
+    for x in range(0,500):
+        st = df2.iloc[x]
+        if re.match(r'\d{1,2}\s\w{1,8}\s\d{2,4}',st):
+            try:
+                dt = parser.parse(st)
+            except ValueError:
+                print (str("Error: first")+st)
+            k = dt.strftime('%m/%d/%Y')
+            df2.iloc[x] = k
+        if re.match(r'\d{1,2}\s\d{2,4}',st):
+            st = "01/"+st[0:2]+"/"+st[3:7]
+            try:
+                dt = parser.parse(st)
+            except ValueError:
+                print (str("Error: sec")+st)
+            k = dt.strftime('%m/%d/%Y')
+            df2.iloc[x] = k
+        try:
+            dt = parser.parse(st)
+        except ValueError:
+            if len(st)==6:
+                dt=parser.parse(st[1:6])
+            
+            #print (str("Error: ")+st+" "+str(x)+" "+str(len(st)))
+            print (str("Error: ")+st)
+                
+        k = dt.strftime('%m/%d/%Y')
+        df2.iloc[x] = k
+        
+        
+            
+    df2['Date'] = pd.to_datetime(df2)
+    df2['Date'] = df2['Date'].astype(datetime)
+    #print (df2)
+    
+    
+    df2.index = pd.to_datetime([datetime.fromtimestamp(time.mktime(item)) for item in df2.index])
+    
+    #df2 = df2.sort_values()
+    
+    for x in range(0,500):
+        print (type(df2.iloc[x]))
+  
+    df2 = df2.sort_values(na_position='last')
+    #print (df2.index)
+    for x in range(0,500):
+        print (str(x)+" "+str(df2.iloc[x]))
+        
+    #for x in range(0,500):
+        #print (str(x)+" "+str(df1.iloc[x]))
+    # Your code here
+    
+    result_series = pd.Series(df2.index)
+    #print (result_series)
+    
+    return df
+date_sorter()
+
+
+
+
+if df2.iloc[x]=="":
+            print (df1.iloc[x])
+            list = re.findall(r'\d{,4}', df1.iloc[x])
+            #print (list)
+            df2.iloc[x] = df1.iloc[x]
+            
+
+
+
+
+
+
+
+
+
+if re.match(r'\d',st):
+        print ("yes")
+        
+    months = 'jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec'
+    df1 = df.replace('\n|\.|:|,|=|\(|\)|;|~','', regex=True)
+    df1 = df1.replace('-','/',regex=True)
+    for x in range(0,500):
+        row = df1.iloc[x]
+        #print (row)
+        row_arr = row.split(' ')
+        result_arr = []
+        for k in row_arr:
+            if re.match(r'\d',k) :
+                result_arr.append(k)
+                #print (k)
+                continue
+            if len(k)<3:
+                continue
+            if re.match(r'^.*(jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec).*$',k[:3]):
+                result_arr.append(k[:3])
+        st = ""
+        for k in result_arr:
+
+            st = st+k+" "
+        df1.iloc[x] = st[:-1]
+        #print (df1.iloc[x])
+    
+    df2 = df1.str.findall(r'(\d{1,2}[/-^\S\s]\w{1,9}[/-^\S\s]\d{2,4})|(\w{1,9}[/-^\S\s]\d{1,2}[,][\s]\d{2,4})|(\d{,4})')
+    print (df2.iloc[6])
+    for x in range(0,500):
+        s = ""
+        list = df2.iloc[x]
+        if len(list)==0:
+            list = re.findall(r'\w{1,9}[/-^\S\s]\d{2,4}', df1.iloc[x])
+            s2=""
+            for k in list:
+                s2 = s2+k+" "  
+            df2.iloc[x] = s2
+            tup = df2.iloc[x]
+        else:
+            list2 = df2.iloc[x]
+            tup = list2[0]
+            for k in tup:
+                if k!="":
+                    s = s+k+"    "
+            df2.iloc[x]=s
+    
+    for x in range (0,500):
+        print (str(x)+"  "+df2.iloc[x])
+        
+        
+        
+                
+                    
+                
+        
+    return df2
+date_sorter()
+
+
+414
+417
+428
+466
+470
+481
+493
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def date_sorter():
+    import re
+    import datetime, time
+    from datetime import datetime
+    from dateutil import parser
+
+    
+    st = "r1978"
+    
+    print ( re.match(r'\d+',st))
+    #print ("-------------")    
+        
+    months = 'jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec'
+    df1 = df.replace('8mo |B12 |enomatous |lications |now|\n|\.|:|,|=|\(|\)|;|~|"|//','', regex=True)
+    df1 = df1.replace('-','/',regex=True)
+    
+    for x in range(0,500):
+        row = df1.iloc[x]
+        row_arr = row.split(' ')
+        result_arr = []
+        for k in row_arr:
+            if re.match(r'\d+',k) :
+                if re.match(r'^[0-9]*$',k) and int(k)>2018:
+                    continue
+                if re.match(r'^[0-9]*$',k) and int(k)>31 and int(k)<1900:
+                    continue
+   
+                result_arr.append(k)
+                continue
+                
+            if len(re.findall(r'\d+',k))>0:
+                result_arr.append(k)
+                
+            if len(k)<3:
+                continue
+            if re.match(r'^.*(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec).*$',k[:3]):
+                result_arr.append(k[:3])
+        st = ""
+        for k in result_arr:
+            st = st+k+" "
+        df1.iloc[x] = st[:-1]
+        #print (df1.iloc[x])
+    print (df1.iloc[493])
+    # Matches 11/31/2004
+    df2 = df1.str.findall(r'\d{1,2}[/]\w{1,9}[/]\d{2,4}')
+    
+    #Matches 11 January 1994
+    for x in range (0,500):
+        if df2.iloc[x]==[]:
+            df2.iloc[x] = re.findall(r'\d{1,2}[\s]\w{1,9}[\s]\d{2,4}',df1.iloc[x])
+            
+    #Matches May 30 2001
+    for x in range (0,500):
+        if df2.iloc[x]==[]:
+            df2.iloc[x] = re.findall(r'\w{1,9}[\s]\d{1,2}[\s]\d{2,4}',df1.iloc[x])
+            
+    #Matches June 2001
+    for x in range (0,500):
+        if df2.iloc[x]==[]:
+            match =  re.findall(r'\w{1,9}[\s]\d{2,4}',df1.iloc[x])
+            df2.iloc[x] =  match
+            
+
+            
+    #Matches 6/2001
+    for x in range (0,500):
+        if df2.iloc[x]==[]:
+            match =  re.findall(r'\d{1,2}[/]\d{2,4}',df1.iloc[x])
+            df2.iloc[x] =  match
+            
+    
+                
+                
+    #Matches 2004 to 01/01/2004
+    for x in range (0,500):
+        if df2.iloc[x]==[]:
+            if re.match(r'\d{4}',df1.iloc[x]):
+                df2.iloc[x]="01/01/"+str(df1.iloc[x])
+             
+    # From r2004 to 2004  
+    
+    for x in range (0,500):
+        if df2.iloc[x]==[]:
+            if re.match(r'\w{,1}\d{4}',df1.iloc[x]):
+                print (df1.iloc[x])
+                df2.iloc[x]="01/01/"+str(df1.iloc[x][1:])  
+                
+    #Matches 2004 to 01/01/2004
+    for x in range (0,500):
+        if df2.iloc[x]==[]:
+            if re.match(r'\d{4}',df1.iloc[x]):
+                df2.iloc[x]="01/01/"+str(df1.iloc[x])
+    
+    #Change from arr to string
+    for x in range (0,500):
+        if str(type(df2.iloc[x])) == "<class 'list'>" and len(df2.iloc[x])>0:
+            
+            df2.iloc[x] = df2.iloc[x][0]
+      
+    
+    for x in range (0,500):
+        if str(type(df2.iloc[x])) == "<class 'list'>" and len(df2.iloc[x])>0:
+            
+            df2.iloc[x] = df2.iloc[x][0]
+    
+    #print (df1)
+    c=0
+    print (df2.iloc[414])
+    for x in range (0,500):
+        if df2.iloc[x]==[]:
+            c=c+1
+            
+        #print (str(x)+" "+str(df2.iloc[x]))
+    
+    c = 0
+    for x in range (0,500):
+        try:
+            dt = parser.parse(df2.iloc[x])
+            df2.iloc[x] = dt
+            prev = dt
+        except ValueError:
+            #print (str("Error: ")+str(x)+" "+str(df2.iloc[x]))
+            #k = dt.strftime('%m/%d/%Y')
+            #print (k)
+            df2.iloc[x] = dt
+            c= c+1
+    print (c)
+        
+    #for x in range (0,500):
+        #print (df2.iloc[x])
+    
+    print (type(df2))
+    
+    df2 = df2.sort_values()
+        
+                
+                    
+                
+        
+    return df2.index
+date_sorter()

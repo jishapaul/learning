@@ -1,0 +1,28 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import numpy as np
+
+np.random.seed(12345)
+
+df = pd.DataFrame([np.random.normal(32000,200000,3650), 
+                   np.random.normal(43000,100000,3650), 
+                   np.random.normal(43500,140000,3650), 
+                   np.random.normal(48000,70000,3650)], 
+                  index=[1992,1993,1994,1995])
+
+
+
+
+d1 = pd.Series(list(df.loc[1992])).mean()
+d2 = pd.Series(list(df.loc[1993])).mean()
+d3 = pd.Series(list(df.loc[1994])).mean()
+d4 = pd.Series(list(df.loc[1995])).mean()
+
+d = pd.Series([d1,d2,d3,d4],index=[1992,1993,1994,1995])
+print (d.index)
+ax = d[[1992,1993,1994,1995]].plot(kind='bar', title ="Range",  legend=True, fontsize=12, colormap='Paired')
+ax.set_xlabel("Year", fontsize=12)
+ax.set_ylabel("Number of Votes", fontsize=12)
+plt.show()
+d

@@ -1,0 +1,75 @@
+graphlab.product_key.set_product_key('A9FB-B838-E851-ACCF-E09E-915C-2E5E-0883')
+
+for error:InvalidProductKeyTraceback (most recent call last)
+<ipython-input-2-7e8307ca8a92> in <module>()
+----> 1 graphlab.set_runtime_config('GRAPHLAB_DEFAULT_NUM_PYLAMBDA_WORKERS', 4)
+
+/opt/conda/lib/python2.7/site-packages/graphlab/util/__init__.pyc in set_runtime_config(name, value)
+    474     """
+    475     from ..connect import main as _glconnect
+--> 476     unity = _glconnect.get_unity()
+    477     ret = unity.set_global(name, value)
+    478     if ret != "":
+
+/opt/conda/lib/python2.7/site-packages/graphlab/connect/main.pyc in get_unity()
+    158     """
+    159     if not is_connected():
+--> 160         launch()
+    161     assert is_connected(), ENGINE_START_ERROR_MESSAGE
+    162     return __UNITY_GLOBAL_PROXY__
+
+/opt/conda/lib/python2.7/site-packages/graphlab/connect/main.pyc in launch(server_addr, server_bin, server_log, auth_token, server_public_key)
+     89         if server:
+     90             server.try_stop()
+---> 91         raise e
+     92     server.set_log_progress(True)
+     93     # start the client
+
+InvalidProductKey: Product key validation failed.
+
+____________________________________________________________________________________________________________________________
+
+def remove_words(list, selected_words):
+    dict1 = {}
+    for dict in list:
+        for key in dict:
+            if key  in selected_words:
+                if key not in dict1:
+                    dict1.update({key:dict[key]})
+                else:
+                    val = dict1[key]+dict[key]
+                    dict1[key] = val
+            
+    return dict1
+
+print remove_words(products['word_count'], selected_words)
+dict = remove_words(products['word_count'], selected_words)
+max(dict, key=lambda i: dict[i])
+min(dict, key=lambda i: dict[i])
+
+{'great': 42420, 'fantastic': 873, 'love': 40277, 'wow': 131, 'terrible': 673, 'amazing': 1305, 'bad': 3197, 'horrible': 659, 'awful': 345, 'hate': 1057, 'awesome': 2002}
+
+def awesome_count(dict):
+    if 'awesome' in dict:
+        return dict['awesome']
+    else:
+        return 0
+
+products['awesome'] = products['word_count'].apply(awesome_count)
+
+def awesome_count(dict,word):
+    if word in dict:
+        return dict[word]
+    else:
+        return 0
+train_data, test_data = products.random_split(.8,seed=0)
+products['awesome'] = products['word_count'].apply(lambda x:awesome_count(x,'awesome'))
+sentiment_model = graphlab.logistic_classifier.create(train_data,
+                                                     target='sentiment',
+                                                     features=selected_words,
+                                                     validation_set=test_data)
+sentiment_model['coefficients'].print_rows(num_rows=12, num_columns=12)
+
+for word in selected_words:
+    products[word] = products['word_count'].apply(lambda x:awesome_count(x,word))
+
